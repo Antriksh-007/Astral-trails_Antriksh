@@ -24,7 +24,7 @@ except:
 base_dose_day = flux * 0.00005
 
 # Attenuation factors
-mu_values = {'Aluminum': 0.324, 'Polyethylene': 0.2}  # cm⁻¹, approx.
+mu_values = {'Aluminum': 0.36, 'Polyethylene': 0.69}  # tuned to your data
 if material != "None" and thickness > 0:
     transmitted = np.exp(-mu_values[material] * thickness)
 else:
