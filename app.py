@@ -110,12 +110,19 @@ with tabs[0]:
     # Interactive Risk chart
     st.subheader("📊 Interactive Risk Severity Chart")
 
-    # Define thresholds and labels
-    thresholds = [0, 100, 500, 1000, 3000, 6000, 10000]
+    # Define thresholds and labels for discrete levels
+    thresholds = [0, 1, 5, 15, 30, 50]
     labels = [
-        "No Effects", "Minor Risk", "Mild ARS", "Severe ARS", "Lethal", "Extreme", "Fatal"
+        "None", "Minor", "Mild ARS", "Severe ARS", "Lethal", "Extreme/Fatal"
     ]
-    colors = ["#2ecc71", "#f1c40f", "#f39c12", "#e67e22", "#e74c3c", "#c0392b"]
+    colors = ["#2ecc71", "#f1c40f", "#f39c12", "#e67e22", "#e74c3c"]
+
+    # Determine the next-level threshold for adjusted dose
+    next_level = thresholds[-1]
+    for i in range(len(thresholds) - 1):
+        if thresholds[i] <= adjusted_dose < thresholds[i+1]:
+            next_level = thresholds[i+1]
+            break
 
     # Create Plotly figure
     fig = go.Figure()
@@ -131,18 +138,18 @@ with tabs[0]:
             text=labels[i], showarrow=False, font=dict(size=12), opacity=0.8
         )
 
-    # Plot dose markers
+    # Plot markers: raw dose continuous, adjusted dose snaps to next discrete level
     fig.add_trace(go.Scatter(
         x=[raw_dose], y=[0.5], mode='markers+text', name='Raw Dose',
         marker=dict(size=12), text=['Raw'], textposition='bottom center'
     ))
     fig.add_trace(go.Scatter(
-        x=[adjusted_dose], y=[0.5], mode='markers+text', name='Adjusted Dose',
-        marker=dict(size=12), text=['Adjusted'], textposition='top center'
+        x=[next_level], y=[0.5], mode='markers+text', name='Next Risk Level',
+        marker=dict(size=12), text=['Next'], textposition='top center'
     ))
 
     fig.update_layout(
-        xaxis=dict(title="Dose (mSv)", range=[0, max(thresholds)]),
+        xaxis=dict(title="Dose (mSv)", range=[0, thresholds[-1]]),
         yaxis=dict(visible=False), title="Radiation Dose vs. Biological Risk",
         height=300, margin=dict(t=40, b=40), showlegend=True
     )
