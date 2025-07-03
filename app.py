@@ -26,7 +26,7 @@ tabs = st.tabs([
 ])
 
 # Tab 3: Biological Effects
-with tabs[2]:
+with tabs[0]:
     st.subheader("Biological Effects of Radiation")
 
     dose = st.slider("Select Radiation Dose (mSv)", 0, 10000, 200)
