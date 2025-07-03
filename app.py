@@ -124,13 +124,18 @@ with tabs[0]:
     ax.legend()
     st.pyplot(fig)
 
-    # Organ susceptibility table
-    st.subheader("Organ Susceptibility (at ≥50 mSv)")
+   # Table: Organ-specific susceptibility (simplified)
+    st.subheader("Organ Susceptibility (Generalized)")
+
     df = pd.DataFrame({
-        "Organ": ["Bone Marrow", "GI Tract", "Skin"],
-        "Effect": ["Reduced blood cells", "Nausea/diarrhea", "Burns/hair loss"]
+        "Organ": ["Bone Marrow", "GI Tract", "Skin", "Brain", "Reproductive Organs"],
+        "Effect at 1000 mSv+": [
+            "Reduced blood cell count", "Nausea, diarrhea", "Burns, hair loss",
+            "Cognitive impairment", "Sterility"
+        ]
     })
     st.dataframe(df)
+
 
 # Footer
 st.markdown(f"""
