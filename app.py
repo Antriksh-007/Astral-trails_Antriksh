@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt  # Import at the top for cleaner structure
 import pandas as pd  # Import at the top for cleaner structure
 import os
 from pathlib import Path
-import plotly.graph_objects as go
+import plotly.graph_objects as go  # Moved to top-level
 
 # App configuration
 st.set_page_config(
@@ -96,7 +96,7 @@ with tabs[0]:
 
     st.info(f"Biological Effect: **{effect}** at {adjusted_dose:.2f} mSv")
 
-    # Image loading: ensure correct path\            
+    # Image loading: ensure correct path
     script_dir = Path(__file__).parent
     image_dir = script_dir / "images"
     image_path = image_dir / img_file
@@ -107,90 +107,58 @@ with tabs[0]:
     except Exception as e:
         st.error(f"Could not load image: {e}\nCheck that 'images' folder exists alongside this script and contains {img_file}.")
 
-    # Risk chart
-   
-
+    # Interactive Risk chart
     st.subheader("📊 Interactive Risk Severity Chart")
-    
-    # Define thresholds, labels, and colors
+
+    # Define thresholds and labels
     thresholds = [0, 100, 500, 1000, 3000, 6000, 10000]
     labels = [
         "No Effects", "Minor Risk", "Mild ARS", "Severe ARS", "Lethal", "Extreme", "Fatal"
     ]
     colors = ["#2ecc71", "#f1c40f", "#f39c12", "#e67e22", "#e74c3c", "#c0392b"]
-    
-    # Create figure
+
+    # Create Plotly figure
     fig = go.Figure()
-    
-    # Add background colored zones with text annotations
+    # Background zones
     for i in range(len(thresholds) - 1):
         fig.add_shape(
             type="rect",
-            x0=thresholds[i],
-            x1=thresholds[i + 1],
-            y0=0,
-            y1=1,
-            fillcolor=colors[i],
-            opacity=0.3,
-            layer="below",
-            line_width=0,
+            x0=thresholds[i], x1=thresholds[i+1], y0=0, y1=1,
+            fillcolor=colors[i], opacity=0.3, layer="below", line_width=0
         )
         fig.add_annotation(
-            x=(thresholds[i] + thresholds[i + 1]) / 2,
-            y=0.95,
-            text=labels[i],
-            showarrow=False,
-            font=dict(size=12),
-            opacity=0.8
+            x=(thresholds[i]+thresholds[i+1]) / 2, y=0.95,
+            text=labels[i], showarrow=False, font=dict(size=12), opacity=0.8
         )
-    
+
     # Plot dose markers
     fig.add_trace(go.Scatter(
-        x=[dose],
-        y=[0.5],
-        mode='markers+text',
-        name='Original Dose',
-        marker=dict(color='blue', size=12),
-        text=["Original"],
-        textposition="bottom center"
+        x=[raw_dose], y=[0.5], mode='markers+text', name='Raw Dose',
+        marker=dict(size=12), text=['Raw'], textposition='bottom center'
     ))
-    
     fig.add_trace(go.Scatter(
-        x=[adjusted_dose],
-        y=[0.5],
-        mode='markers+text',
-        name='Adjusted Dose',
-        marker=dict(color='red', size=12),
-        text=["Adjusted"],
-        textposition="top center"
+        x=[adjusted_dose], y=[0.5], mode='markers+text', name='Adjusted Dose',
+        marker=dict(size=12), text=['Adjusted'], textposition='top center'
     ))
-    
-    # Layout cleanup
+
     fig.update_layout(
-        xaxis=dict(title="Dose (mSv)", range=[0, 10000]),
-        yaxis=dict(visible=False),  # hide useless Y axis
-        title="Radiation Dose vs. Biological Risk",
-        height=250,
-        margin=dict(t=40, b=40),
-        showlegend=True
+        xaxis=dict(title="Dose (mSv)", range=[0, max(thresholds)]),
+        yaxis=dict(visible=False), title="Radiation Dose vs. Biological Risk",
+        height=300, margin=dict(t=40, b=40), showlegend=True
     )
-    
-    # Display it
+
     st.plotly_chart(fig, use_container_width=True)
 
-
-   # Table: Organ-specific susceptibility (simplified)
+    # Table: Organ-specific susceptibility
     st.subheader("Organ Susceptibility (Generalized)")
-
     df = pd.DataFrame({
         "Organ": ["Bone Marrow", "GI Tract", "Skin", "Brain", "Reproductive Organs"],
-        "Effect at 1000 mSv+": [
+        "Effect at ≥50 mSv": [
             "Reduced blood cell count", "Nausea, diarrhea", "Burns, hair loss",
             "Cognitive impairment", "Sterility"
         ]
     })
     st.dataframe(df)
-
 
 # Footer
 st.markdown(f"""
