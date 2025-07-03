@@ -43,7 +43,7 @@ with tabs[0]:
     gender = st.selectbox("Select Gender", ["Male", "Female", "Prefer not to say"])
 
     # Duration Input (days)
-    days = st.slider("Select Duration (Days)", 0, 3650, 30)
+    days = st.slider("Select Duration (Days)", 0, 36500, 30)
 
     # Base daily cosmic radiation rate (mSv/day) — average cosmic component at sea level (~0.38 mSv/year ⇒ ~0.00104 mSv/day)
     BASE_RATE = 0.00104  # Source: UNSCEAR 2020 report
