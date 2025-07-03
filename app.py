@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt  # Import at the top for cleaner structure
 import pandas as pd  # Import at the top for cleaner structure
 import os
 from pathlib import Path
+import plotly.graph_objects as go
 
 # App configuration
 st.set_page_config(
@@ -107,7 +108,7 @@ with tabs[0]:
         st.error(f"Could not load image: {e}\nCheck that 'images' folder exists alongside this script and contains {img_file}.")
 
     # Risk chart
-   import plotly.graph_objects as go
+   
 
     st.subheader("📊 Interactive Risk Severity Chart")
     
